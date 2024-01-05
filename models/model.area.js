@@ -11,8 +11,22 @@ const areaSchema = new mongoose.Schema({
   demographicData: String,
   population: Number,
   ageRatio: {
-    male: Number,
-    female: Number,
+    "0-14": {
+      male: Number,
+      female: Number,
+    },
+    "15-24": {
+      male: Number,
+      female: Number,
+    },
+    "25-54": {
+      male: Number,
+      female: Number,
+    },
+    "55+": {
+      male: Number,
+      female: Number,
+    },
   },
   genderRatio: {
     male: Number,
@@ -23,9 +37,9 @@ const areaSchema = new mongoose.Schema({
   location: {
     type: { type: String, default: "Point" },
     coordinates: [Number],
+    address: String,
   },
 });
-
 
 areaSchema.virtual("id").get(function () {
   return this._id.toHexString();
