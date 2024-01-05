@@ -101,9 +101,24 @@ router.delete("/areas/:id", async (req, res) => {
 
 router.get("/search", async (req, res) => {
   try {
-    const query = req.query.query;
+    const { query, latitude, longitude } = req.query;
     const regex = new RegExp(query, "i");
-    const recommendations = await Area.find({ name: regex });
+
+    let searchCriteria = { name: regex };
+
+    if (latitude && longitude) {
+      const radius = 10 / 6371;
+      searchCriteria.location = {
+        $geoWithin: {
+          $centerSphere: [
+            [parseFloat(longitude), parseFloat(latitude)],
+            radius,
+          ],
+        },
+      };
+    }
+
+    const recommendations = await Area.find(searchCriteria);
     res.json(recommendations);
   } catch (error) {
     console.error(error);
